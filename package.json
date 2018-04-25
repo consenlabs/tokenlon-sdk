@@ -1,6 +1,6 @@
 {
   "name": "tokenlon-sdk",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "imToken Tokenlon API for node",
   "keywords": [
     "imToken",
@@ -20,6 +20,7 @@
     "lint": "tslint --project . 'src/**/*.ts'",
     "proxy-server": "ts-node ./tests/__proxy__/proxy.ts",
     "test": "yarn lint && yarn jest -- --runInBand --colors --coverage",
+    "prepublish": "npm run build",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "jest": {

@@ -1,4 +1,6 @@
 .vscode
+yarn.lock
+package-lock.json
 /lib/
 /coverage/
 /node_modules/

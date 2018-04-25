@@ -1,0 +1,4 @@
+.vscode
+/lib/
+/coverage/
+/node_modules/

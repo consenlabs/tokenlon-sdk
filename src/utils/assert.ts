@@ -38,7 +38,7 @@ export const assert = {
     }
   },
   isValidTokenNameString(variableName: string, value: string) {
-    sharedAssert.assert(_.isString(value), `${variableName} ${value} must not be a string`)
+    sharedAssert.assert(_.isString(value), `${variableName} ${value} must be a string`)
     sharedAssert.assert(!!value.trim(), `${variableName} ${value} must not be a empty string`)
     sharedAssert.assert(value.trim() === value, `${variableName} ${value} must be trimed`)
     sharedAssert.assert(value.toUpperCase() === value, `${variableName} ${value} must be upper case`)

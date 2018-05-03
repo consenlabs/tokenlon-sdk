@@ -86,12 +86,16 @@ export const getTokenBalance = ({ address, contractAddress }): Promise<BigNumber
 export const sendTransaction = async (params: Ethereum.SendTransactionParams): Promise<any> => {
   const { address, privateKey, gasPrice, to, value, gasLimit, data } = params
   const nonce = await getNonce(address)
-  const estimateGas = await getEstimateGas({
-    from: address,
-    to,
-    value: web3.toHex(value),
-    data,
-  })
+  let estimateGas = 0
+  try {
+    estimateGas = await getEstimateGas({
+      from: address,
+      to,
+      value: web3.toHex(value),
+      data,
+    })
+  } catch (_e) {}
+
   const privateKeyBuffer = new Buffer(privateKey, 'hex')
   const gas = estimateGas && gasLimit ? Math.max(estimateGas, gasLimit) : (estimateGas || gasLimit)
   const rawTx = {

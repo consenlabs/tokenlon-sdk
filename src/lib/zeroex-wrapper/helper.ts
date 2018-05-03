@@ -29,8 +29,8 @@ export default {
     return sendTransaction({
       address,
       privateKey,
-      gasLimit: opts ? opts.gas : gasLimit,
-      gasPrice: opts ? opts.gasPrice : gasPrice,
+      gasLimit: opts && opts.gas ? opts.gas : gasLimit,
+      gasPrice: opts && opts.gasPrice ? opts.gasPrice : gasPrice,
       to,
       value: 0,
       data: encodeData('token', method, args),
@@ -44,8 +44,8 @@ export default {
     return sendTransaction({
       address,
       privateKey,
-      gasLimit: opts ? opts.gas : gasLimit,
-      gasPrice: opts ? opts.gasPrice : gasPrice,
+      gasLimit: opts && opts.gas ? opts.gas : gasLimit,
+      gasPrice: opts && opts.gasPrice ? opts.gasPrice : gasPrice,
       to: etherTokenContractAddress,
       value: method === 'deposit' ? amountInBaseUnits.toNumber() : 0,
       data: encodeData('etherToken', method, [amountInBaseUnits.toString()]),

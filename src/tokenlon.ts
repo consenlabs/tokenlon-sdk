@@ -207,20 +207,17 @@ export default class Tokenlon {
     return this.zeroExWrapper.token.setAllowanceAsync(token.contractAddress, wallet.address, zeroEx.tokenTransferProxyContractAddress, constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
   }
 
-  private async fillOrderHelper(method, params: TokenlonInterface.FillOrderParams) {
-    const { wallet } = this._config
+  private async fillOrderHelper({ params, fill, validate }) {
+    const { wallet, onChainValidate } = this._config
     const { rawOrder } = params
     const orderFillRequest = getOrderFillRequest(params, this._pairs)
     const { signedOrder, takerTokenFillAmount } = orderFillRequest
     let txHash = ''
-    if (method === 'fillOrder') {
-      await this.zeroExWrapper.exchange.validateFillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, wallet.address)
-      txHash = await this.zeroExWrapper.exchange.fillOrderAsync(signedOrder, takerTokenFillAmount, false, wallet.address)
-
-    } else if (method === 'fillOrKillOrder') {
-      await this.zeroExWrapper.exchange.validateFillOrKillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, wallet.address)
-      txHash = await this.zeroExWrapper.exchange.fillOrKillOrderAsync(signedOrder, takerTokenFillAmount, wallet.address)
+    if (onChainValidate) {
+      await validate(signedOrder, takerTokenFillAmount, wallet.address)
     }
+    txHash = await fill(signedOrder, takerTokenFillAmount, wallet.address)
+
     await this.server.fillOrder({
       txHash,
       order: JSON.parse(rawOrder),
@@ -230,46 +227,54 @@ export default class Tokenlon {
   }
 
   async fillOrder(params: TokenlonInterface.FillOrderParams) {
-    return this.fillOrderHelper('fillOrder', params)
+    return this.fillOrderHelper({
+      fill: (signedOrder, takerTokenFillAmount, address) => {
+        return this.zeroExWrapper.exchange.fillOrderAsync(signedOrder, takerTokenFillAmount, false, address)
+      },
+      validate: (signedOrder, takerTokenFillAmount, address) => {
+        return this.zeroExWrapper.exchange.validateFillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, address)
+      },
+      params,
+    })
   }
 
   async fillOrKillOrder(params: TokenlonInterface.FillOrderParams) {
-    return this.fillOrderHelper('fillOrKillOrder', params)
+    return this.fillOrderHelper({
+      fill: (signedOrder, takerTokenFillAmount, address) => {
+        return this.zeroExWrapper.exchange.fillOrKillOrderAsync(signedOrder, takerTokenFillAmount, address)
+      },
+      validate: (signedOrder, takerTokenFillAmount, address) => {
+        return this.zeroExWrapper.exchange.validateFillOrKillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, address)
+      },
+      params,
+    })
   }
 
-  private async batchFillOrdersHelper(method, orderFillReqs: TokenlonInterface.FillOrderParams[]) {
-    const { wallet } = this._config
+  private async batchFillOrdersHelper({ batchFill, validate, orderFillReqs }) {
+    const { wallet, onChainValidate } = this._config
     const orderFillRequests = orderFillReqs.map(req => getOrderFillRequest(req, this._pairs))
     const errors = []
     let errorMsg = ''
-    for (let r of orderFillRequests) {
-      const { signedOrder, takerTokenFillAmount } = r
-      try {
-        if (method === 'batchFillOrders') {
-          await this.zeroExWrapper.exchange.validateFillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, wallet.address)
-        } else if (method === 'batchFillOrKill') {
-          await this.zeroExWrapper.exchange.validateFillOrKillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, wallet.address)
+    if (onChainValidate) {
+      for (let r of orderFillRequests) {
+        const { signedOrder, takerTokenFillAmount } = r
+        try {
+          await validate(signedOrder, takerTokenFillAmount, wallet.address)
+        } catch (e) {
+          errors.push(e && e.message && e.message.toString())
         }
-      } catch (e) {
-        errors.push(e && e.message && e.message.toString())
       }
-    }
-
-    if (errors.length) {
-      errorMsg = `These orders are invalid ${JSON.stringify(errors)}`
+      if (errors.length) {
+        errorMsg = `These orders are invalid ${JSON.stringify(errors)}`
+      }
     }
 
     if (errors.length !== orderFillRequests.length) {
       if (errorMsg) {
         console.log(errorMsg)
       }
-      let txHash = ''
       // !! Using orderFillRequests, even though there has some orders invalid
-      if (method === 'batchFillOrders') {
-        txHash = await this.zeroExWrapper.exchange.batchFillOrdersAsync(orderFillRequests, false, wallet.address)
-      } else if (method === 'batchFillOrKill') {
-        txHash = await this.zeroExWrapper.exchange.batchFillOrKillAsync(orderFillRequests, wallet.address)
-      }
+      const txHash = await batchFill(orderFillRequests, wallet.address)
       await this.server.batchFillOrders({
         txHash,
         orders: orderFillReqs.map(({ rawOrder }, index) => {
@@ -287,11 +292,27 @@ export default class Tokenlon {
   }
 
   async batchFillOrders(orderFillReqs: TokenlonInterface.FillOrderParams[]) {
-    return this.batchFillOrdersHelper('batchFillOrders', orderFillReqs)
+    return this.batchFillOrdersHelper({
+      batchFill: (orderFillRequests, address) => {
+        return this.zeroExWrapper.exchange.batchFillOrdersAsync(orderFillRequests, false, address)
+      },
+      validate: (signedOrder, takerTokenFillAmount, address) => {
+        return this.zeroExWrapper.exchange.validateFillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, address)
+      },
+      orderFillReqs,
+    })
   }
 
   async batchFillOrKill(orderFillReqs: TokenlonInterface.FillOrderParams[]) {
-    return this.batchFillOrdersHelper('batchFillOrKill', orderFillReqs)
+    return this.batchFillOrdersHelper({
+      batchFill: (orderFillRequests, address) => {
+        return this.zeroExWrapper.exchange.batchFillOrKillAsync(orderFillRequests, address)
+      },
+      validate: (signedOrder, takerTokenFillAmount, address) => {
+        return this.zeroExWrapper.exchange.validateFillOrKillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, address)
+      },
+      orderFillReqs,
+    })
   }
 
   async fillOrdersUpTo(params: TokenlonInterface.FillOrdersUpTo) {
@@ -361,12 +382,15 @@ export default class Tokenlon {
   }
 
   async cancelOrder(rawOrder: string, onChain?: boolean) {
+    const { onChainValidate } = this._config
     const order = JSON.parse(rawOrder)
     const bnOrder = orderStringToBN(order)
     const orderHash = ZeroEx.getOrderHashHex(bnOrder)
 
     if (onChain) {
-      await this.zeroExWrapper.exchange.validateCancelOrderThrowIfInvalidAsync(bnOrder, bnOrder.takerTokenAmount)
+      if (onChainValidate) {
+        await this.zeroExWrapper.exchange.validateCancelOrderThrowIfInvalidAsync(bnOrder, bnOrder.takerTokenAmount)
+      }
       const txHash = await this.zeroExWrapper.exchange.cancelOrderAsync(bnOrder, bnOrder.takerTokenAmount)
       await this.server.cancelOrdersWithHash([{ orderHash, txHash }])
       return txHash
@@ -376,6 +400,7 @@ export default class Tokenlon {
   }
 
   async batchCancelOrders(rawOrders: string[], onChain?: boolean) {
+    const { onChainValidate } = this._config
     const bnOrders = rawOrders.map(rawOrder => orderStringToBN(JSON.parse(rawOrder)))
     const orderHashs = bnOrders.map(ZeroEx.getOrderHashHex)
 
@@ -384,7 +409,9 @@ export default class Tokenlon {
       let errorMsg = ''
       for (let bnOrder of bnOrders) {
         try {
-          await this.zeroExWrapper.exchange.validateCancelOrderThrowIfInvalidAsync(bnOrder, bnOrder.takerTokenAmount)
+          if (onChainValidate) {
+            await this.zeroExWrapper.exchange.validateCancelOrderThrowIfInvalidAsync(bnOrder, bnOrder.takerTokenAmount)
+          }
         } catch (e) {
           errors.push(e && e.message && e.message.toString())
         }

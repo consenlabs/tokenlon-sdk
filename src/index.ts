@@ -14,6 +14,8 @@ import { getSimpleOrderWithBaseQuoteBySignedOrder, getSignedOrder, generateDexOr
 
 export const createTokenlon = async (options: GlobalConfig): Promise<Tokenlon> => {
   const config = lowerCaseObjValue(options)
+  // default onChainValidate config is true
+  config.onChainValidate = config.onChainValidate === false ? config.onChainValidate : true
   assert.isValidConfig(config)
 
   const server = new Server(config.server.url, config.wallet)
@@ -53,7 +55,9 @@ export const createTokenlon = async (options: GlobalConfig): Promise<Tokenlon> =
           simpleOrder: order,
         })
         const signedOrder = getSignedOrder(orderWithoutSalt, config)
-        await zeroExWrapper.exchange.validateOrderFillableOrThrowAsync(signedOrder)
+        if (config.onChainValidate) {
+          await zeroExWrapper.exchange.validateOrderFillableOrThrowAsync(signedOrder)
+        }
         return orderBNToString(signedOrder)
       },
     },

@@ -16,6 +16,7 @@ export type GlobalConfig = {
     providerUrl: string;
   }
   wallet: Wallet
+  onChainValidate?: boolean
   zeroEx: {
     gasPrice: number
     gasLimit: number

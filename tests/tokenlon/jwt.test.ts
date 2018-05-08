@@ -116,25 +116,19 @@ describe('test send JWT request', () => {
     },
     {
       testMsg: 'send a request with a expired token',
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgyMGYwYzZlNzlhNzYzZTFmZTgzZGUxZmJmMDgyNzlhYTM5NTNmYjVmIiwiZXhwaXJlZEF0IjoiMTUyMzc4MTE4NCJ9.WVZ8_xZpMq7myxewK8OODT-QtCi-3J0fU8A-44GOaU0',
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgxN2JmNTUyZGEwZWM0MGIxNjE0NjYwYTc3M2QzNzE5MDlkYmUzZWFhIiwiZXhwaXJlZEF0IjoiMTUyNTgzNDk5MCJ9.cOQz9gs1lH222EQKUppK49r-asd9ydBPWjn7S78mwZg',
       errorMsg: 'expired',
       result: false,
     },
     {
       testMsg: 'send a request with a expired token',
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgyMGYwYzZlNzlhNzYzZTFmZTgzZGUxZmJmMDgyNzlhYTM5NTNmYjVmIiwiZXhwaXJlZEF0IjoiMTUyMzc4MTczMSJ9.OYaiS_2C_RnZzaBnzWdbt3JMxPQouA0xL3DCrnQux_M',
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgxN2JmNTUyZGEwZWM0MGIxNjE0NjYwYTc3M2QzNzE5MDlkYmUzZWFhIiwiZXhwaXJlZEF0IjoiMTUyNTgzNTAyNCJ9.Qgg2yk0lz2DQ4ClTTmlI7jPgpKXKO_YEGVp0AbR_MfI',
       errorMsg: 'expired',
       result: false,
     },
     {
       testMsg: 'send a request with a expired token',
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgyMGYwYzZlNzlhNzYzZTFmZTgzZGUxZmJmMDgyNzlhYTM5NTNmYjVmIiwiZXhwaXJlZEF0IjoiMTUyMzc4MDEyMCJ9.vgxgfzfoEoyHnq13VMQTbf6N3dzd2oTy-aAZ95HhJvg',
-      errorMsg: 'expired',
-      result: false,
-    },
-    {
-      testMsg: 'send a request with a valid token',
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgyMGYwYzZlNzlhNzYzZTFmZTgzZGUxZmJmMDgyNzlhYTM5NTNmYjVmIiwiZXhwaXJlZEF0IjoiMTUyMzc3NzIzNSJ9.s6-_965r1IBM674POTwF-Qa5Gl0H6sMDt5PBkiY6XSw',
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgxN2JmNTUyZGEwZWM0MGIxNjE0NjYwYTc3M2QzNzE5MDlkYmUzZWFhIiwiZXhwaXJlZEF0IjoiMTUyNTgzNTA0MyJ9.gGshnK7gqIHz2043-RfFNGunP0C1YwYI1STjUo_g4po',
       errorMsg: 'expired',
       result: false,
     },

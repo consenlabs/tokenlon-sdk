@@ -379,25 +379,22 @@ export default class Tokenlon {
     const bnOrders = rawOrders.map(rawOrder => orderStringToBN(JSON.parse(rawOrder)))
     const orderHashs = bnOrders.map(ZeroEx.getOrderHashHex)
 
-    const errors = []
-    let errorMsg = ''
-    for (let bnOrder of bnOrders) {
-      try {
-        await this.zeroExWrapper.exchange.validateCancelOrderThrowIfInvalidAsync(bnOrder, bnOrder.takerTokenAmount)
-      } catch (e) {
-        errors.push(e && e.message && e.message.toString())
+    if (onChain) {
+      const errors = []
+      let errorMsg = ''
+      for (let bnOrder of bnOrders) {
+        try {
+          await this.zeroExWrapper.exchange.validateCancelOrderThrowIfInvalidAsync(bnOrder, bnOrder.takerTokenAmount)
+        } catch (e) {
+          errors.push(e && e.message && e.message.toString())
+        }
       }
-    }
-    if (errors.length) {
-      errorMsg = `These orders are invalid ${JSON.stringify(errors)}`
-    }
-
-    if (errors.length !== bnOrders.length) {
-      if (errorMsg) {
+      if (errors.length) {
+        errorMsg = `These orders are invalid ${JSON.stringify(errors)}`
         console.log(errorMsg)
       }
 
-      if (onChain) {
+      if (errors.length !== bnOrders.length) {
         const orderCancellationRequests = bnOrders.map(bnOrder => {
           return {
             order: bnOrder,
@@ -409,11 +406,10 @@ export default class Tokenlon {
         await this.server.cancelOrdersWithHash(orderHashs.map(orderHash => ({ orderHash, txHash })))
         return txHash
       } else {
-        return this.server.cancelOrders(orderHashs)
+        throw newError(errorMsg)
       }
     } else {
-      console.log(errorMsg)
-      throw newError(TokenlonError.InvalidOrders)
+      return this.server.cancelOrders(orderHashs)
     }
   }
 }

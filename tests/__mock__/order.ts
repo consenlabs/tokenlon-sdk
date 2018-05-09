@@ -1,5 +1,6 @@
 import { Side, Server } from '../../src/types'
 import { zeroExConfig } from './config'
+import { FEE_RECIPIENT } from '../../src/constants'
 export const orders = [
   {
     signedOrder: {
@@ -8,7 +9,7 @@ export const orders = [
       taker: '0x0000000000000000000000000000000000000000',
       makerTokenAddress: '0xf26085682797370769bbb4391a0ed05510d9029d',
       takerTokenAddress: '0xd0a1e359811322d97991e03f863a0c30c2cf029c',
-      feeRecipient: '0x0000000000000000000000000000000000000000',
+      feeRecipient: FEE_RECIPIENT,
       makerTokenAmount: '10000000000000000',
       takerTokenAmount: '1940000000000',
       makerFee: '0',

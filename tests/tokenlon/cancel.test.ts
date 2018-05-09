@@ -51,7 +51,7 @@ describe('test cancelOrder / cancelOrders', () => {
     }
 
     const orderBook1 = await tokenlon.getOrderBook(baseQuote)
-    await waitSeconds(2)
+    await waitSeconds(5)
     const myOrders1 = await tokenlon.getOrders(baseQuote)
 
     // check placed

@@ -7,6 +7,7 @@ import Tokenlon from '../../src/tokenlon'
 import { toBN } from '../../src/utils/math'
 import { getTimestamp } from '../../src/utils/helper'
 import { waitSeconds } from '../__utils__/wait'
+import { formatNumHelper } from '../../src/utils/format'
 
 let tokenlon = null as Tokenlon
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
@@ -28,6 +29,30 @@ const containSimpleOrder = (orders, simpleOrder) => {
       expirationUnixTimestampSecCheck
   })
 }
+
+describe('test placeOrder amount less then quoteMinUnit should throw error', () => {
+  const baseQuote = {
+    base: sntWethPairData.base.symbol,
+    quote: sntWethPairData.quote.symbol,
+  }
+  simpleOrders.forEach((simpleOrder) => {
+    const amount = +formatNumHelper(6)(simpleOrder.amount / 10000, false)
+    it(`${simpleOrder.side} - ${amount} - ${simpleOrder.price} test placeOrder should throw error`, async () => {
+      let errorMsg = ''
+      try {
+        await tokenlon.placeOrder({
+          ...baseQuote,
+          ...simpleOrder,
+          amount,
+        })
+      } catch (e) {
+        errorMsg = e.message
+      }
+
+      expect(errorMsg).toBeTruthy()
+    })
+  })
+})
 
 describe('test placeOrder / getOrderBook / getOrders', () => {
   const baseQuote = {

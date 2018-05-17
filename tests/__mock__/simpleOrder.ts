@@ -4,7 +4,7 @@ export const validSimpleOrder = [
   {
     side: 'BUY',
     price: 0.00002,
-    amount: 0.01,
+    amount: 100,
   },
   {
     side: 'SELL',
@@ -43,7 +43,7 @@ export const invalidSimpleOrder = [
 export const simpleOrders = [
   {
     price: 0.00019999,
-    amount: 20.27873423,
+    amount: 200.2787342,
     side: 'BUY' as Side,
     expirationUnixTimestampSec: getTimestamp() + 10 * 60,
   },

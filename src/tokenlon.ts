@@ -3,6 +3,7 @@ import * as Web3 from 'web3'
 import { constants } from '0x.js/lib/src/utils/constants'
 import { fromDecimalToUnit, fromUnitToDecimalBN } from './utils/format'
 import { assert as zeroExAssertUtils } from '@0xproject/assert'
+import { assert } from './utils/assert'
 import { Server } from './lib/server'
 import { getPairBySymbol, getTokenByName } from './utils/pair'
 import {
@@ -123,6 +124,12 @@ export default class Tokenlon {
   }
 
   async placeOrder(params: TokenlonInterface.SimpleOrderWithBaseQuote): Promise<TokenlonInterface.OrderBookItem> {
+    const pairs = this._pairs
+    assert.isValidBaseQuote(params, pairs)
+    const pair = getPairBySymbol(params, pairs)
+    const { precision, quoteMinUnit } = pair
+    assert.isValidSimpleOrder(params, precision)
+    assert.isValidAmount(params, quoteMinUnit)
     const toBePlacedOrder = await this.utils.getSignedOrderBySimpleOrderAsync(params)
     await this.server.placeOrder(toBePlacedOrder)
     return {

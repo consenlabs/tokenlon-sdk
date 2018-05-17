@@ -81,6 +81,7 @@ export namespace Pair {
     anchored?: boolean
     precision: number
     rank?: number
+    quoteMinUnit?: number
     marketUrl?: string;
   }
 }

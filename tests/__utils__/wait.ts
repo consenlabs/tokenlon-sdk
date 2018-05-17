@@ -10,29 +10,31 @@ export const waitSeconds = (seconds) => {
   })
 }
 
-export const waitMined = async (txHash, seconds) => {
-  const getReceiptAsync = (txHash) => {
-    return new Promise((resolve) => {
-      web3.eth.getTransactionReceipt(txHash, (err, res) => {
-        if (!err) {
-          resolve(res)
-        }
-      })
+const getReceiptAsync = (txHash) => {
+  return new Promise((resolve) => {
+    web3.eth.getTransactionReceipt(txHash, (err, res) => {
+      if (!err) {
+        resolve(res)
+      }
     })
-  }
-  let receipt = await getReceiptAsync(txHash)
+  })
+}
+
+export const waitMined = async (txHash, seconds) => {
+  let receipt = await getReceiptAsync(txHash) as any
   let timeUsed = 0
-  if (timeUsed <= seconds) {
-    while (!receipt || !timeUsed) {
-      await waitSeconds(2)
-      receipt = await getReceiptAsync(txHash)
-      timeUsed += 2
-    }
+
+  while ((!receipt || receipt.blockNumber <= 0) && timeUsed <= seconds) {
+    await waitSeconds(2)
+    receipt = await getReceiptAsync(txHash)
+    timeUsed += 2
+  }
+
+  if (receipt && receipt.blockNumber > 0) {
     console.log('set seconds', seconds)
     console.log('timeUsed', timeUsed)
     await waitSeconds(2)
     return true
-  } else {
-    return false
   }
+  return false
 }

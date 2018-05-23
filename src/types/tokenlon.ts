@@ -18,6 +18,7 @@ export namespace Tokenlon {
   }
 
   export interface OrderBookItem extends SimpleOrder {
+    amountTotal: number
     rawOrder: string
     isMaker: boolean
   }

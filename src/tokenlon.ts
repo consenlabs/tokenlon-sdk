@@ -5,7 +5,7 @@ import { fromDecimalToUnit, fromUnitToDecimalBN } from './utils/format'
 import { assert as zeroExAssertUtils } from '@0xproject/assert'
 import { assert } from './utils/assert'
 import { Server } from './lib/server'
-import { getPairBySymbol, getTokenByName, getPairByContractAddress, getPairBySignedOrder } from './utils/pair'
+import { getPairBySymbol, getTokenByName, getPairBySignedOrder } from './utils/pair'
 import {
   orderStringToBN,
   translateOrderBookToSimple,
@@ -152,6 +152,7 @@ export default class Tokenlon {
       side: params.side,
       price: params.price,
       amount: params.amount,
+      amountTotal: params.amount,
       expirationUnixTimestampSec: params.expirationUnixTimestampSec,
       // for key sequence to be same with server order rawOrder
       rawOrder: JSON.stringify({

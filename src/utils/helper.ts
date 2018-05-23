@@ -10,9 +10,12 @@ export const helpCompareStr = (a: string, b: string): boolean => lowerCase(a) ==
 
 export const convertTrades = (trades => {
   return trades.map(item => {
-    const { tradeType } = item
+    const { tradeType, payload } = item
+    const rawOrder = JSON.stringify(payload)
+    delete item.payload
     return {
       ...item,
+      rawOrder,
       side: tradeType === 'ask' ? 'SELL' : (tradeType === 'bid' ? 'BUY' : ''),
     }
   })

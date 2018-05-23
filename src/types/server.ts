@@ -110,13 +110,13 @@ export namespace Server {
     tradeType: tradeType
     amountRemaining: number
     expirationUnixTimestampSec: string
-    orderHash: string
+    payload: DexOrderBNToString
     trades: MakerTradesDetailItem[]
   }
 
   export interface TakerTradesItem extends TradesDetailItem {
     tradeType: tradeType
-    orderHash: string
+    payload: DexOrderBNToString
     txHash: string
   }
 

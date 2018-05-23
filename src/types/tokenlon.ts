@@ -43,12 +43,26 @@ export namespace Tokenlon {
     timeRange?: [number, number]
   }
 
-  export interface MakerTradesItem extends Server.MakerTradesItem {
+  export interface MakerTradesItem {
+    tradeType: Server.tradeType
+    trades: Server.MakerTradesDetailItem[]
+    amountRemaining: number
+    expirationUnixTimestampSec: string
+
     side: Side
+    rawOrder: string
   }
 
-  export interface TakerTradesItem extends Server.TakerTradesItem {
+  export interface TakerTradesItem {
+    tradeType: Server.tradeType
+    id: number
+    price: number
+    amount: number
+    timestamp: number
+    txHash: string
+
     side: Side
+    rawOrder: string
   }
 
   export interface OrderDetail extends OrderBookItem {

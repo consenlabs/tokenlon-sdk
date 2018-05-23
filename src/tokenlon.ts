@@ -5,7 +5,7 @@ import { fromDecimalToUnit, fromUnitToDecimalBN } from './utils/format'
 import { assert as zeroExAssertUtils } from '@0xproject/assert'
 import { assert } from './utils/assert'
 import { Server } from './lib/server'
-import { getPairBySymbol, getTokenByName } from './utils/pair'
+import { getPairBySymbol, getTokenByName, getPairByContractAddress, getPairBySignedOrder } from './utils/pair'
 import {
   orderStringToBN,
   translateOrderBookToSimple,
@@ -68,7 +68,7 @@ export default class Tokenlon {
     }
   }
 
-  async getOrders(params: TokenlonInterface.GetOrderParams) {
+  async getOrders(params: TokenlonInterface.GetOrderParams): Promise<TokenlonInterface.OrderBookItem[]> {
     const pair = getPairBySymbol(params, this._pairs)
     const baseTokenAddress = pair.base.contractAddress
     const quoteTokenAddress = pair.quote.contractAddress
@@ -84,6 +84,21 @@ export default class Tokenlon {
       orderbookItems: myOrders,
       pair,
     })
+  }
+
+  async getOrder(rawOrder: string): Promise<TokenlonInterface.OrderDetail> {
+    const signedOrder = JSON.parse(rawOrder)
+    const orderHash = ZeroEx.getOrderHashHex(signedOrder)
+    const pair = getPairBySignedOrder(signedOrder, this._pairs)
+    const order = await this.server.getOrder(orderHash)
+    const ob = translateOrderBookToSimple({
+      orderbookItems: [order],
+      pair,
+    })[0]
+    return {
+      ...ob,
+      trades: order.trades,
+    }
   }
 
   async getMakerTrades(params: TokenlonInterface.TradesParams): Promise<TokenlonInterface.MakerTradesItem[]> {

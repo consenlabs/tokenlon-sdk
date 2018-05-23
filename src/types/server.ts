@@ -119,4 +119,8 @@ export namespace Server {
     orderHash: string
     txHash: string
   }
+
+  export interface OrderDetail extends OrderBookItem {
+    trades: MakerTradesDetailItem[]
+  }
 }

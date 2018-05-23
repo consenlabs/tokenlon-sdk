@@ -50,6 +50,10 @@ export namespace Tokenlon {
     side: Side
   }
 
+  export interface OrderDetail extends OrderBookItem {
+    trades: Server.MakerTradesDetailItem[]
+  }
+
   export interface FillOrdersUpTo {
     base: string
     quote: string

@@ -49,7 +49,7 @@ const fillHelper = (v, fill) => {
 
 // 统一小数点后位数量 fill 传递 false 表示如果后面都是 0，会移除
 export const formatNumHelper = (place) => {
-  return (value, fill) => fillHelper(formatMoney(value, place), fill)
+  return (value, fill) => fillHelper(formatMoney(value, place || 8), fill)
 }
 
 export const fromUnitToDecimalBN = (balance, decimal): BigNumber => {

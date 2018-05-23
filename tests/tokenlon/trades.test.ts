@@ -10,6 +10,9 @@ import web3 from '../../src/lib/web3-wrapper'
 import { orders } from '../__mock__/order'
 import { simpleOrders } from '../__mock__/simpleOrder'
 import { waitSeconds, waitMined } from '../__utils__/wait'
+import { getTimestamp } from '../../src/utils/helper'
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
 
 let tokenlon = null as Tokenlon
 web3.setProvider(new Web3.providers.HttpProvider(web3ProviderUrl))
@@ -35,6 +38,7 @@ describe('test placeOrder / getOrders / getMakerTrades / getTakerTrades / getOrd
     const obItem = await tokenlon.placeOrder({
       ...baseQuote,
       ...simpleOrder,
+      expirationUnixTimestampSec: getTimestamp() + 10 * 60,
     })
     await waitSeconds(3)
     const myOrders = await tokenlon.getOrders(baseQuote)
@@ -48,13 +52,14 @@ describe('test placeOrder / getOrders / getMakerTrades / getTakerTrades / getOrd
     expect(isSameOrder(orderDetail, obItem))
     expect(orderDetail.amountTotal).toEqual(orderDetail.amount)
 
-    const toFillBaseAmount = orderDetail.amount / 2
+    const toFillHalfBaseAmount = orderDetail.amount / 2
 
     // fill this order and check maker / taker / getOrder trades
     const txHash = await tokenlon.fillOrder({
       ...baseQuote,
       ...obItem,
       side: obItem.side === 'BUY' ? 'SELL' : 'BUY',
+      amount: toFillHalfBaseAmount,
     })
 
     await waitMined(txHash, 60)
@@ -63,7 +68,7 @@ describe('test placeOrder / getOrders / getMakerTrades / getTakerTrades / getOrd
     const orderDetailAfterFill = await tokenlon.getOrder(obItem.rawOrder)
 
     // test amountTotal
-    expect(orderDetailAfterFill.amount + toFillBaseAmount).toEqual(orderDetailAfterFill.amountTotal)
+    expect(orderDetailAfterFill.amount + toFillHalfBaseAmount).toEqual(obItem.amountTotal)
 
     const makerTrades = await tokenlon.getMakerTrades({ ...baseQuote, page: 1, perpage: 30 })
     const makerTrade = makerTrades.find(t => t.rawOrder === orderDetailAfterFill.rawOrder)
@@ -84,6 +89,6 @@ describe('test placeOrder / getOrders / getMakerTrades / getTakerTrades / getOrd
     })
 
     // test trade item amount
-    expect(+takerTrade.amount).toEqual(toFillBaseAmount)
+    expect(+takerTrade.amount).toEqual(toFillHalfBaseAmount)
   })
 })

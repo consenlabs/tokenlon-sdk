@@ -13,6 +13,7 @@ export const assert = {
   isValidPrecision(variableName: string, value: number, precision: number) {
     const formatedNum = toBN(value).toString()
     const pre = formatedNum.split('.')[1]
+    precision = precision || 8
     sharedAssert.assert(_.isUndefined(pre) || pre.length <= precision, `${variableName} ${value} must match precision ${precision}`)
   },
   isValidExpirationUnixTimestampSec(value?: number) {

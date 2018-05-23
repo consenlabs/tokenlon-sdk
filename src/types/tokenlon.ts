@@ -35,6 +35,7 @@ export namespace Tokenlon {
 
   export interface FillOrderParams extends SimpleOrderWithBaseQuote {
     rawOrder: string
+    [propName: string]: any
   }
 
   export interface TradesParams extends BaseQuote {

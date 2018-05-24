@@ -119,12 +119,12 @@ describe('test formatNumHelper', () => {
     num: '1',
     place: undefined,
     fill: undefined,
-    result: '1.0000',
+    result: '1.00000000',
   }, {
     num: 1,
     place: undefined,
     fill: undefined,
-    result: '1.0000',
+    result: '1.00000000',
   }, {
     num: 1,
     place: 4,

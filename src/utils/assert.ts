@@ -13,10 +13,15 @@ export const assert = {
   isValidPrecision(variableName: string, value: number, precision: number) {
     const formatedNum = toBN(value).toString()
     const pre = formatedNum.split('.')[1]
+    precision = precision || 8
     sharedAssert.assert(_.isUndefined(pre) || pre.length <= precision, `${variableName} ${value} must match precision ${precision}`)
   },
   isValidExpirationUnixTimestampSec(value?: number) {
     sharedAssert.assert(_.isUndefined(value) || (getTimestamp() < +value), `expirationUnixTimestampSec ${value} must after the current time`)
+  },
+  isValidAmount(order: SimpleOrder, quoteMinUnit: number | string) {
+    const { price, amount } = order
+    sharedAssert.assert(price * amount >= (+quoteMinUnit ? +quoteMinUnit : 0.0001), `Total amount must larger then or be equal with quoteMinUnit ${quoteMinUnit}`)
   },
   isValidSimpleOrder(order: SimpleOrder, precision: number) {
     const { side, expirationUnixTimestampSec } = order

@@ -69,6 +69,46 @@ describe('our assert utils', () => {
       })
     })
 
+    describe('assert.isValidAmount', () => {
+      const datas = [
+        {
+          params: [{
+            price: 1,
+            amount: 1,
+          }, 1],
+          result: true,
+        },
+        {
+          params: [{
+            price: 1,
+            amount: 1,
+          }, 0.2],
+          result: true,
+        },
+        {
+          params: [{
+            price: 0.1,
+            amount: 1,
+          }, 0.2],
+          result: false,
+        },
+      ]
+
+      datas.forEach(data => {
+        if (data.result) {
+          it(`${JSON.stringify(data.params)}is valid`, () => {
+            expect(assert.isValidAmount.apply(assert.isValidAmount, data.params)).toBeUndefined()
+          })
+        } else {
+          it(`${JSON.stringify(data.params)}is invalid`, () => {
+            expect(() => {
+              assert.isValidAmount.apply(assert.isValidAmount, data.params)
+            }).toThrow()
+          })
+        }
+      })
+    })
+
     describe('assert.isValidSimpleOrder', () => {
       it('these simple orders are valid', () => {
         validSimpleOrder.forEach(o => expect(assert.isValidSimpleOrder(o as SimpleOrder, 8)).toBeUndefined())

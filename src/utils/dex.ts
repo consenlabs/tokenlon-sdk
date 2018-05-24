@@ -83,6 +83,18 @@ export const orderStringToBN = (order: DexOrderBNToString | Dex.DexOrderWithoutS
   return result
 }
 
+export const getAmountTotal = (params: Dex.GetSimpleOrderParams): number => {
+  const { order, pair } = params
+  const { base, quote, precision } = pair
+  const formatPrice = formatNumHelper(precision)
+  const { makerTokenAddress, makerTokenAmount, takerTokenAddress, takerTokenAmount } = order
+  const isBuy = helpCompareStr(base.contractAddress, takerTokenAddress) && helpCompareStr(quote.contractAddress, makerTokenAddress)
+  const baseTokenAmountBN = isBuy ? fromDecimalToUnit(takerTokenAmount, base.decimal) : fromDecimalToUnit(makerTokenAmount, base.decimal)
+  const amountTotal = toBN(formatPrice(baseTokenAmountBN.toString(), false)).toNumber()
+
+  return amountTotal
+}
+
 // translate dex order to simple order, for us to check which order we want to fill
 export const getSimpleOrder = (params: Dex.GetSimpleOrderParams): SimpleOrder => {
   const { order, pair, amountRemaining } = params
@@ -134,6 +146,7 @@ export const translateOrderBookToSimple = (params: Dex.TranslateOrderBookToSimpl
         order: payload,
         amountRemaining,
       }),
+      amountTotal: getAmountTotal({ pair, order: payload }),
       isMaker: !!wallet && helpCompareStr(wallet.address, payload.maker),
       rawOrder: JSON.stringify(payload),
     }

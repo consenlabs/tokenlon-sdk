@@ -115,21 +115,21 @@ describe('test send JWT request', () => {
       result: true,
     },
     {
-      testMsg: 'send a request with a expired token',
+      testMsg: 'send a request with a invalid signature token',
       token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgxN2JmNTUyZGEwZWM0MGIxNjE0NjYwYTc3M2QzNzE5MDlkYmUzZWFhIiwiZXhwaXJlZEF0IjoiMTUyNTgzNDk5MCJ9.cOQz9gs1lH222EQKUppK49r-asd9ydBPWjn7S78mwZg',
-      errorMsg: 'invalid',
+      errorMsg: 'signature',
       result: false,
     },
     {
-      testMsg: 'send a request with a expired token',
+      testMsg: 'send a request with a invalid signature token',
       token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgxN2JmNTUyZGEwZWM0MGIxNjE0NjYwYTc3M2QzNzE5MDlkYmUzZWFhIiwiZXhwaXJlZEF0IjoiMTUyNTgzNTAyNCJ9.Qgg2yk0lz2DQ4ClTTmlI7jPgpKXKO_YEGVp0AbR_MfI',
-      errorMsg: 'invalid',
+      errorMsg: 'signature',
       result: false,
     },
     {
-      testMsg: 'send a request with a expired token',
+      testMsg: 'send a request with a invalid signature token',
       token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyZXNzIjoiMHgxN2JmNTUyZGEwZWM0MGIxNjE0NjYwYTc3M2QzNzE5MDlkYmUzZWFhIiwiZXhwaXJlZEF0IjoiMTUyNTgzNTA0MyJ9.gGshnK7gqIHz2043-RfFNGunP0C1YwYI1STjUo_g4po',
-      errorMsg: 'invalid',
+      errorMsg: 'signature',
       result: false,
     },
     {

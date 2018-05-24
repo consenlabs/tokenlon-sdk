@@ -105,6 +105,11 @@ export class Server {
     return jsonrpc.get(this._url, header, 'dex.getOrders', [params]).then(data => data || [])
   }
 
+  async getOrder(orderHash: string): Promise<ServerInterface.OrderDetail> {
+    const header = await this._getHeader()
+    return jsonrpc.get(this._url, header, 'dex.getOrder', [{ orderHash }]).then(data => data || [])
+  }
+
   async getMakerTrades(params: ServerInterface.MakerTradesParams): Promise<ServerInterface.MakerTradesItem[]> {
     const header = await this._getHeader()
     return jsonrpc.get(this._url, header, 'dex.getMakerTrades', [params]).then(data => data || [])

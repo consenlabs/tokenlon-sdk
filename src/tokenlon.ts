@@ -68,7 +68,7 @@ export default class Tokenlon {
     }
   }
 
-  async getOrders(params: TokenlonInterface.GetOrderParams): Promise<TokenlonInterface.OrderBookItem[]> {
+  async getOrders(params: TokenlonInterface.GetOrdersParams): Promise<TokenlonInterface.OrderBookItem[]> {
     const pair = getPairBySymbol(params, this._pairs)
     const baseTokenAddress = pair.base.contractAddress
     const quoteTokenAddress = pair.quote.contractAddress

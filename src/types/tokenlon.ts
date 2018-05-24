@@ -12,7 +12,7 @@ export namespace Tokenlon {
     quote: string;
   }
 
-  export interface GetOrderParams extends BaseQuote {
+  export interface GetOrdersParams extends BaseQuote {
     page?: number
     perpage?: number
   }

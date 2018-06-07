@@ -7,6 +7,8 @@ export type Wallet = {
   privateKey: string;
 }
 
+export type GasPriceAdaptor = 'safeLow' | 'average' | 'fast'
+
 export type GlobalConfig = {
   server: {
     url: string;
@@ -16,6 +18,7 @@ export type GlobalConfig = {
   }
   wallet: Wallet
   onChainValidate?: boolean
+  gasPriceAdaptor: GasPriceAdaptor
   zeroEx: {
     gasPrice: number
     gasLimit: number

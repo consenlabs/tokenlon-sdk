@@ -1,3 +1,5 @@
+import { GasPriceAdaptor } from '../../src/types'
+
 export const wallet = {
   address: '0x20F0C6e79A763E1Fe83DE1Fbf08279Aa3953FB5f',
   privateKey: '3f992df8720a778e68a82d27a47d91155ce69ea9954b46ef85afaf19c75bd192',
@@ -34,6 +36,7 @@ export const localConfig = {
     providerUrl: web3ProviderUrl,
   },
   zeroEx: zeroExConfig,
+  gasPriceAdaptor: 'safeLow' as GasPriceAdaptor,
 }
 
 export const localConfigUseToFill = {
@@ -45,4 +48,5 @@ export const localConfigUseToFill = {
     providerUrl: web3ProviderUrl,
   },
   zeroEx: zeroExConfig,
+  gasPriceAdaptor: 'safeLow' as GasPriceAdaptor,
 }

@@ -36,7 +36,7 @@ export enum TokenlonError {
   OrdersMustBeSamePairAndSameSideWithFillOrdersUpTo = 'ORDERS_MUST_BE_SAME_PAIR_AND_SAME_SIDE_WITH_FILLORDERSUPTO',
 }
 
-export { Side, Wallet, GlobalConfig, SimpleOrder, DexOrderBNToString } from './base'
+export { GasPriceAdaptor, Side, Wallet, GlobalConfig, SimpleOrder, DexOrderBNToString } from './base'
 export { Dex } from './dex'
 export { Pair } from './pair'
 export { Server } from './server'

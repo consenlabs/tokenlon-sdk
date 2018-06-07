@@ -10,7 +10,7 @@ export default {
   setConfig(config: GlobalConfig) {
     this._config = config
   },
-  async _getGasLimitAndGasPriceAsync(opts?: TransactionOpts): Promise<Tokenlon.TokenlonTransactionOpts> {
+  async _getGasLimitAndGasPriceAsync(opts?: TransactionOpts): Promise<Tokenlon.TxOpts> {
     const { zeroEx, gasPriceAdaptor } = this._config
     const { gasLimit } = zeroEx
     let gasP = null

@@ -1,6 +1,7 @@
 import { GasPriceAdaptor } from '../../src/types'
 import { getGasPriceByAdaptorAsync } from '../../src/utils/gasPriceAdaptor'
 import { waitSeconds } from '../__utils__/wait'
+import * as _ from 'lodash'
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
 
@@ -13,9 +14,9 @@ describe('test adaptor', () => {
       expect(gasPriceBefore).toBeGreaterThanOrEqual(Math.pow(10, 9))
     })
 
-    it(`${ad} within 30 seconds should be same`, async () => {
+    it(`${ad} within 60 seconds should be same`, async () => {
       const gasPriceBefore = await getGasPriceByAdaptorAsync(ad as GasPriceAdaptor)
-      await waitSeconds(25)
+      await waitSeconds(40)
       const gasPrice25 = await getGasPriceByAdaptorAsync(ad as GasPriceAdaptor)
       expect(gasPriceBefore).toEqual(gasPrice25)
     })

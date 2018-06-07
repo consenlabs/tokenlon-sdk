@@ -10,7 +10,7 @@ describe('test adaptor', () => {
   for (let ad of testData) {
     it(`${ad} should larger than or equal with 1Gwei`, async () => {
       const gasPriceBefore = await getGasPriceByAdaptorAsync(ad as GasPriceAdaptor)
-      expect(gasPriceBefore).toBeGreaterThanOrEqual(100000000)
+      expect(gasPriceBefore).toBeGreaterThanOrEqual(Math.pow(10, 9))
     })
 
     it(`${ad} within 30 seconds should be same`, async () => {

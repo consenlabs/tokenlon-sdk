@@ -19,9 +19,9 @@ export const getGasPriceByAdaptorAsync = async (adaptor: GasPriceAdaptor): Promi
   } else {
     const gasPrice = await getGasPriceByAdaptorHelper(adaptor)
     stack[adaptor] = {
-      gasPrice: gasPrice * 100000000, // gwei process
+      gasPrice: gasPrice * Math.pow(10, 9), // gwei process
       timestamp: getTimestamp(),
     }
-    return gasPrice * 100000000
+    return gasPrice * Math.pow(10, 9)
   }
 }

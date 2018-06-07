@@ -15,7 +15,7 @@ import {
   orderBNToString,
 } from './utils/dex'
 import { Pair, Tokenlon as TokenlonInterface, GlobalConfig, TokenlonError } from './types'
-import { helpCompareStr, newError, convertTrades } from './utils/helper'
+import { helpCompareStr, newError, convertTrades, convertTokenlonTxOptsTo0xOpts } from './utils/helper'
 import { BigNumber } from '@0xproject/utils'
 
 export default class Tokenlon {
@@ -173,16 +173,26 @@ export default class Tokenlon {
     }
   }
 
-  async deposit(amount: number) {
+  async deposit(amount: number, opts?: TokenlonInterface.TxOpts) {
     const { wallet, zeroEx } = this._config
     zeroExAssertUtils.isNumber('amount', amount)
-    return this.zeroExWrapper.etherToken.depositAsync(zeroEx.etherTokenContractAddress, fromUnitToDecimalBN(amount, 18), wallet.address)
+    return this.zeroExWrapper.etherToken.depositAsync(
+      zeroEx.etherTokenContractAddress,
+      fromUnitToDecimalBN(amount, 18),
+      wallet.address,
+      convertTokenlonTxOptsTo0xOpts(opts),
+    )
   }
 
-  async withdraw(amount: number) {
+  async withdraw(amount: number, opts?: TokenlonInterface.TxOpts) {
     const { wallet, zeroEx } = this._config
     zeroExAssertUtils.isNumber('amount', amount)
-    return this.zeroExWrapper.etherToken.withdrawAsync(zeroEx.etherTokenContractAddress, fromUnitToDecimalBN(amount, 18), wallet.address)
+    return this.zeroExWrapper.etherToken.withdrawAsync(
+      zeroEx.etherTokenContractAddress,
+      fromUnitToDecimalBN(amount, 18),
+      wallet.address,
+      convertTokenlonTxOptsTo0xOpts(opts),
+    )
   }
 
   async getTokenBalance(tokenName: string, address?: string): Promise<number> {
@@ -214,20 +224,33 @@ export default class Tokenlon {
     return fromDecimalToUnit(allowanceBN, token.decimal).toNumber()
   }
 
-  async setAllowance(tokenName: string, amount: number) {
+  async setAllowance(tokenName: string, amount: number, opts?: TokenlonInterface.TxOpts) {
     if (helpCompareStr(tokenName, 'ETH')) throw newError(TokenlonError.EthDoseNotHaveApprovedMethod)
     const { wallet, zeroEx } = this._config
     zeroExAssertUtils.isNumber('amount', amount)
     const token = getTokenByName(tokenName, this._pairs)
     const amountDecimalBN = fromUnitToDecimalBN(amount, token.decimal)
-    return this.zeroExWrapper.token.setAllowanceAsync(token.contractAddress, wallet.address, zeroEx.tokenTransferProxyContractAddress, amountDecimalBN)
+
+    return this.zeroExWrapper.token.setAllowanceAsync(
+      token.contractAddress,
+      wallet.address,
+      zeroEx.tokenTransferProxyContractAddress,
+      amountDecimalBN,
+      convertTokenlonTxOptsTo0xOpts(opts),
+    )
   }
 
-  async setUnlimitedAllowance(tokenName) {
+  async setUnlimitedAllowance(tokenName, opts?: TokenlonInterface.TxOpts) {
     if (helpCompareStr(tokenName, 'ETH')) throw newError(TokenlonError.EthDoseNotHaveApprovedMethod)
     const { wallet, zeroEx } = this._config
     const token = getTokenByName(tokenName, this._pairs)
-    return this.zeroExWrapper.token.setAllowanceAsync(token.contractAddress, wallet.address, zeroEx.tokenTransferProxyContractAddress, constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS)
+    return this.zeroExWrapper.token.setAllowanceAsync(
+      token.contractAddress,
+      wallet.address,
+      zeroEx.tokenTransferProxyContractAddress,
+      constants.UNLIMITED_ALLOWANCE_IN_BASE_UNITS,
+      convertTokenlonTxOptsTo0xOpts(opts),
+    )
   }
 
   private async fillOrderHelper({ params, fill, validate }) {
@@ -249,10 +272,16 @@ export default class Tokenlon {
     return txHash
   }
 
-  async fillOrder(params: TokenlonInterface.FillOrderParams) {
+  async fillOrder(params: TokenlonInterface.FillOrderParams, opts?: TokenlonInterface.TxOpts) {
     return this.fillOrderHelper({
       fill: (signedOrder, takerTokenFillAmount, address) => {
-        return this.zeroExWrapper.exchange.fillOrderAsync(signedOrder, takerTokenFillAmount, false, address)
+        return this.zeroExWrapper.exchange.fillOrderAsync(
+          signedOrder,
+          takerTokenFillAmount,
+          false,
+          address,
+          convertTokenlonTxOptsTo0xOpts(opts),
+        )
       },
       validate: (signedOrder, takerTokenFillAmount, address) => {
         return this.zeroExWrapper.exchange.validateFillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, address)
@@ -261,10 +290,15 @@ export default class Tokenlon {
     })
   }
 
-  async fillOrKillOrder(params: TokenlonInterface.FillOrderParams) {
+  async fillOrKillOrder(params: TokenlonInterface.FillOrderParams, opts?: TokenlonInterface.TxOpts) {
     return this.fillOrderHelper({
       fill: (signedOrder, takerTokenFillAmount, address) => {
-        return this.zeroExWrapper.exchange.fillOrKillOrderAsync(signedOrder, takerTokenFillAmount, address)
+        return this.zeroExWrapper.exchange.fillOrKillOrderAsync(
+          signedOrder,
+          takerTokenFillAmount,
+          address,
+          convertTokenlonTxOptsTo0xOpts(opts),
+        )
       },
       validate: (signedOrder, takerTokenFillAmount, address) => {
         return this.zeroExWrapper.exchange.validateFillOrKillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, address)
@@ -314,10 +348,15 @@ export default class Tokenlon {
     }
   }
 
-  async batchFillOrders(orderFillReqs: TokenlonInterface.FillOrderParams[]) {
+  async batchFillOrders(orderFillReqs: TokenlonInterface.FillOrderParams[], opts?: TokenlonInterface.TxOpts) {
     return this.batchFillOrdersHelper({
       batchFill: (orderFillRequests, address) => {
-        return this.zeroExWrapper.exchange.batchFillOrdersAsync(orderFillRequests, false, address)
+        return this.zeroExWrapper.exchange.batchFillOrdersAsync(
+          orderFillRequests,
+          false,
+          address,
+          convertTokenlonTxOptsTo0xOpts(opts),
+        )
       },
       validate: (signedOrder, takerTokenFillAmount, address) => {
         return this.zeroExWrapper.exchange.validateFillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, address)
@@ -326,10 +365,14 @@ export default class Tokenlon {
     })
   }
 
-  async batchFillOrKill(orderFillReqs: TokenlonInterface.FillOrderParams[]) {
+  async batchFillOrKill(orderFillReqs: TokenlonInterface.FillOrderParams[], opts?: TokenlonInterface.TxOpts) {
     return this.batchFillOrdersHelper({
       batchFill: (orderFillRequests, address) => {
-        return this.zeroExWrapper.exchange.batchFillOrKillAsync(orderFillRequests, address)
+        return this.zeroExWrapper.exchange.batchFillOrKillAsync(
+          orderFillRequests,
+          address,
+          convertTokenlonTxOptsTo0xOpts(opts),
+        )
       },
       validate: (signedOrder, takerTokenFillAmount, address) => {
         return this.zeroExWrapper.exchange.validateFillOrKillOrderThrowIfInvalidAsync(signedOrder, takerTokenFillAmount, address)
@@ -338,7 +381,7 @@ export default class Tokenlon {
     })
   }
 
-  async fillOrdersUpTo(params: TokenlonInterface.FillOrdersUpTo) {
+  async fillOrdersUpTo(params: TokenlonInterface.FillOrdersUpTo, opts?: TokenlonInterface.TxOpts) {
     const { wallet } = this._config
     const { side, rawOrders, amount } = params
     const signedOrders = rawOrders.map(s => JSON.parse(s))
@@ -384,13 +427,16 @@ export default class Tokenlon {
       }
     })
 
-    const simpleOrders = signedOrders.map(order => getSimpleOrder({
-      order,
-      pair,
-    }))
+    const simpleOrders = signedOrders.map(order => getSimpleOrder({ order, pair }))
     const takerTokenAmountBN = getFillTakerTokenAmountBNByUpToOrders(side, amount, simpleOrders, pair)
+    const txHash = await this.zeroExWrapper.exchange.fillOrdersUpToAsync(
+      signedOrders.map(orderStringToBN),
+      takerTokenAmountBN,
+      false,
+      wallet.address,
+      convertTokenlonTxOptsTo0xOpts(opts),
+    )
 
-    const txHash = await this.zeroExWrapper.exchange.fillOrdersUpToAsync(signedOrders.map(orderStringToBN), takerTokenAmountBN, false, wallet.address)
     await this.server.batchFillOrders({
       txHash,
       orders: signedOrders.map(signedOrder => {
@@ -404,7 +450,7 @@ export default class Tokenlon {
     return txHash
   }
 
-  async cancelOrder(rawOrder: string, onChain?: boolean) {
+  async cancelOrder(rawOrder: string, onChain?: boolean, opts?: TokenlonInterface.TxOpts) {
     const { onChainValidate } = this._config
     const order = JSON.parse(rawOrder)
     const bnOrder = orderStringToBN(order)
@@ -414,7 +460,11 @@ export default class Tokenlon {
       if (onChainValidate) {
         await this.zeroExWrapper.exchange.validateCancelOrderThrowIfInvalidAsync(bnOrder, bnOrder.takerTokenAmount)
       }
-      const txHash = await this.zeroExWrapper.exchange.cancelOrderAsync(bnOrder, bnOrder.takerTokenAmount)
+      const txHash = await this.zeroExWrapper.exchange.cancelOrderAsync(
+        bnOrder,
+        bnOrder.takerTokenAmount,
+        convertTokenlonTxOptsTo0xOpts(opts),
+      )
       await this.server.cancelOrdersWithHash([{ orderHash, txHash }])
       return txHash
     } else {
@@ -422,7 +472,7 @@ export default class Tokenlon {
     }
   }
 
-  async batchCancelOrders(rawOrders: string[], onChain?: boolean) {
+  async batchCancelOrders(rawOrders: string[], onChain?: boolean, opts?: TokenlonInterface.TxOpts) {
     const { onChainValidate } = this._config
     const bnOrders = rawOrders.map(rawOrder => orderStringToBN(JSON.parse(rawOrder)))
     const orderHashs = bnOrders.map(ZeroEx.getOrderHashHex)
@@ -452,7 +502,7 @@ export default class Tokenlon {
           }
         })
         // !! Using orderCancellationRequests, even though there has some orders invalid
-        const txHash = await this.zeroExWrapper.exchange.batchCancelOrdersAsync(orderCancellationRequests)
+        const txHash = await this.zeroExWrapper.exchange.batchCancelOrdersAsync(orderCancellationRequests, convertTokenlonTxOptsTo0xOpts(opts))
         await this.server.cancelOrdersWithHash(orderHashs.map(orderHash => ({ orderHash, txHash })))
         return txHash
       } else {

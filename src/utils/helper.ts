@@ -1,4 +1,7 @@
 import * as _ from 'lodash'
+import { toBN } from './math'
+import { Tokenlon } from '../types'
+import { TransactionOpts } from '0x.js'
 
 export const newError = (msg: string): Error => new Error(msg)
 
@@ -48,4 +51,12 @@ export const leftPadWith0 = (str, len) => {
   len = len - str.length
   if (len <= 0) return str
   return '0'.repeat(len) + str
+}
+
+export const convertTokenlonTxOptsTo0xOpts = (opts: Tokenlon.TxOpts): TransactionOpts => {
+  const { gasLimit, gasPrice } = opts
+  return {
+    gasLimit,
+    gasPrice: toBN(gasPrice),
+  }
 }

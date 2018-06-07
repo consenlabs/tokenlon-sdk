@@ -23,7 +23,7 @@ export const coverageEtherToken = (obj) => {
       assert.assert(ethBalanceInWei.gte(amountInWei), ZeroExError.InsufficientEthBalanceForDeposit)
 
       const txHash = helper.etherTokenTransaction('deposit', amountInWei, txOpts ? {
-        gas: txOpts.gasLimit,
+        gasLimit: txOpts.gasLimit,
         gasPrice: txOpts.gasPrice,
       } : txOpts)
       return txHash
@@ -48,7 +48,7 @@ export const coverageEtherToken = (obj) => {
       assert.assert(WETHBalanceInBaseUnits.gte(amountInWei), ZeroExError.InsufficientWEthBalanceForWithdrawal)
 
       const txHash = helper.etherTokenTransaction('withdraw', amountInWei, txOpts ? {
-        gas: txOpts.gasLimit,
+        gasLimit: txOpts.gasLimit,
         gasPrice: txOpts.gasPrice,
       } : txOpts)
       return txHash

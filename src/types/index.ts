@@ -31,6 +31,7 @@ export enum TokenlonError {
   InvalidContractMethod = 'INVALID_CONTRACT_METHOD',
   InvalidSideWithOrder = 'INVALID_SIDE_WITH_ORDER',
   InvalidWalletPrivateKey = 'INVALID_WALLET_PRIVATE_KEY',
+  InvalidGasPriceAdaptor = 'INVALID_GAS_PRICE_ADAPTOR',
   EthDoseNotHaveApprovedMethod = 'ETH_DOSE_NOT_HAVE_APPROVED_METHOD',
   InvalidPriceWithToBeFilledOrder = 'INVALID_PRICE_WITH_TO_BE_FILLED_ORDER',
   OrdersMustBeSamePairAndSameSideWithFillOrdersUpTo = 'ORDERS_MUST_BE_SAME_PAIR_AND_SAME_SIDE_WITH_FILLORDERSUPTO',

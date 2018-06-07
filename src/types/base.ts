@@ -20,7 +20,6 @@ export type GlobalConfig = {
   onChainValidate?: boolean
   gasPriceAdaptor: GasPriceAdaptor
   zeroEx: {
-    gasPrice: number
     gasLimit: number
     networkId: number
     exchangeContractAddress: undefined | string

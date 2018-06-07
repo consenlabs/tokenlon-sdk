@@ -69,11 +69,15 @@ export const assert = {
     const addr = ethUtil.privateToAddress(new Buffer(privateKey, 'hex'))
     sharedAssert.assert(helpCompareStr(`0x${addr.toString('hex')}`, address), TokenlonError.InvalidWalletPrivateKey)
   },
+  isValidGasPriceAdaptor(adaptor) {
+    sharedAssert.assert(['safeLow', 'average', 'fast'].includes(adaptor), TokenlonError.InvalidGasPriceAdaptor)
+  },
   isValidConfig(config: GlobalConfig) {
-    const { wallet, web3, server } = config
+    const { wallet, web3, server, gasPriceAdaptor } = config
     sharedAssert.isUri('web3.providerUrl', web3.providerUrl)
     sharedAssert.isUri('server.url', server.url)
     this.isValidWallet(wallet)
+    this.isValidGasPriceAdaptor(gasPriceAdaptor)
   },
 }
 

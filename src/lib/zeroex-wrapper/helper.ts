@@ -1,16 +1,19 @@
 import { encodeData, sendTransaction } from '../../utils/ethereum'
 import { BigNumber } from '@0xproject/utils'
 import { GlobalConfig } from '../../types'
+import { getGasPriceByAdaptorAsync } from '../../utils/gasPriceAdaptor'
 
 export default {
   _config: {} as GlobalConfig,
   setConfig(config: GlobalConfig) {
     this._config = config
   },
-  exchangeSendTransaction(method: string, args: any[]) {
-    const { wallet, zeroEx } = this._config
+  async exchangeSendTransaction(method: string, args: any[]) {
+    const { wallet, zeroEx, gasPriceAdaptor } = this._config
     const { address, privateKey } = wallet
-    const { gasLimit, gasPrice, exchangeContractAddress } = zeroEx
+    const { gasLimit, exchangeContractAddress } = zeroEx
+    const gasPrice = await getGasPriceByAdaptorAsync(gasPriceAdaptor)
+
     return sendTransaction({
       address,
       privateKey,
@@ -21,10 +24,11 @@ export default {
       data: encodeData('exchange', method, args),
     })
   },
-  _tokenTransaction(to: string, method: string, args: any[], opts) {
-    const { wallet, zeroEx } = this._config
+  async _tokenTransaction(to: string, method: string, args: any[], opts) {
+    const { wallet, zeroEx, gasPriceAdaptor } = this._config
     const { address, privateKey } = wallet
-    const { gasLimit, gasPrice } = zeroEx
+    const { gasLimit } = zeroEx
+    const gasPrice = await getGasPriceByAdaptorAsync(gasPriceAdaptor)
 
     return sendTransaction({
       address,
@@ -36,10 +40,11 @@ export default {
       data: encodeData('token', method, args),
     })
   },
-  etherTokenTransaction(method: string, amountInBaseUnits: BigNumber, opts) {
-    const { wallet, zeroEx } = this._config
+  async etherTokenTransaction(method: string, amountInBaseUnits: BigNumber, opts) {
+    const { wallet, zeroEx, gasPriceAdaptor } = this._config
     const { address, privateKey } = wallet
-    const { gasLimit, gasPrice, etherTokenContractAddress } = zeroEx
+    const { gasLimit, etherTokenContractAddress } = zeroEx
+    const gasPrice = await getGasPriceByAdaptorAsync(gasPriceAdaptor)
 
     return sendTransaction({
       address,

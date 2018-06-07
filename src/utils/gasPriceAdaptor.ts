@@ -3,7 +3,7 @@ import axios from 'axios'
 import { ETH_GAS_STATION_URL } from '../constants'
 import { getTimestamp, newError } from './helper'
 
-export const getGasPriceByAdaptorHelper = async (adaptor: GasPriceAdaptor): Promise<number> => {
+const getGasPriceByAdaptorHelper = async (adaptor: GasPriceAdaptor): Promise<number> => {
   return axios(ETH_GAS_STATION_URL).then(res => {
     return res.data[adaptor] * 0.1
   }).catch(e => {

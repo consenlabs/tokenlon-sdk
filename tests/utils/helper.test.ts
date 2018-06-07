@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import { newError, lowerCase, getTimestamp, helpCompareStr, lowerCaseObjValue, leftPadWith0 } from '../../src/utils/helper'
+import { newError, lowerCase, getTimestamp, helpCompareStr, lowerCaseObj0xValue, leftPadWith0 } from '../../src/utils/helper'
 
 describe('newError', () => {
   const msg = 'foo'
@@ -34,7 +34,23 @@ describe('helpCompareStr', () => {
   })
 })
 
-describe('lowerCaseObjValue', () => {
+describe('lowerCaseObj0xValue - 0x string', () => {
+  const x = {
+    a: {
+      b: {
+        c: {
+          d: '0X',
+        },
+      },
+    },
+  }
+  const xTobeLowerCase = lowerCaseObj0xValue(x)
+  it('lowerCaseObj0xValue', () => {
+    expect(x.a.b.c.d.toLowerCase()).toBe(xTobeLowerCase.a.b.c.d)
+  })
+})
+
+describe('lowerCaseObj0xValue - not 0x string', () => {
   const x = {
     a: {
       b: {
@@ -44,9 +60,10 @@ describe('lowerCaseObjValue', () => {
       },
     },
   }
-  const xTobeLowerCase = lowerCaseObjValue(x)
-  it('lowerCaseObjValue', () => {
-    expect(x.a.b.c.d.toLowerCase()).toBe(xTobeLowerCase.a.b.c.d)
+  const converted = lowerCaseObj0xValue(x)
+  it('lowerCaseObj0xValue', () => {
+    expect(x.a.b.c.d).toBe(converted.a.b.c.d)
+    expect(x.a.b.c.d.toLowerCase()).toBe(converted.a.b.c.d.toLowerCase())
   })
 })
 

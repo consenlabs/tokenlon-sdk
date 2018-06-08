@@ -27,7 +27,7 @@ describe('test adaptor', () => {
     const gasPriceB = await getGasPriceByAdaptorAsync('average')
     const gasPriceC = await getGasPriceByAdaptorAsync('safeLow')
 
-    expect(gasPriceA).toBeGreaterThan(gasPriceB)
-    expect(gasPriceB).toBeGreaterThan(gasPriceC)
+    expect(gasPriceA).toBeGreaterThanOrEqual(gasPriceB)
+    expect(gasPriceB).toBeGreaterThanOrEqual(gasPriceC)
   })
 })

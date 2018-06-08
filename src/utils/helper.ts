@@ -54,9 +54,12 @@ export const leftPadWith0 = (str, len) => {
 }
 
 export const convertTokenlonTxOptsTo0xOpts = (opts: Tokenlon.TxOpts): TransactionOpts => {
-  const { gasLimit, gasPrice } = opts
-  return {
-    gasLimit,
-    gasPrice: toBN(gasPrice),
+  if (opts) {
+    const { gasLimit, gasPrice } = opts
+    return {
+      gasLimit,
+      gasPrice: gasPrice ? toBN(gasPrice) : gasPrice,
+    } as TransactionOpts
   }
+  return opts as any
 }

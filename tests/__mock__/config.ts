@@ -35,7 +35,7 @@ export const localConfig = {
     providerUrl: web3ProviderUrl,
   },
   zeroEx: zeroExConfig,
-  gasPriceAdaptor: 'safeLow' as GasPriceAdaptor,
+  gasPriceAdaptor: 'average' as GasPriceAdaptor,
 }
 
 export const localConfigUseToFill = {

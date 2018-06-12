@@ -12,7 +12,7 @@ import { simpleOrders } from '../__mock__/simpleOrder'
 import { waitSeconds, waitMined } from '../__utils__/wait'
 import { getTimestamp } from '../../src/utils/helper'
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 200000
 
 let tokenlon = null as Tokenlon
 web3.setProvider(new Web3.providers.HttpProvider(web3ProviderUrl))

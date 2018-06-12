@@ -33,6 +33,7 @@ describe('test fillOrder / batchFillOrders / fillOrKillOrder / batchfillOrKill',
         bids: filterOrderBook(orderBook.bids),
       }
 
+      // small amount
       for (let side of ['BUY', 'SELL']) {
         const baseTokenBalance1 = await tokenlon.getTokenBalance(sntWethPairData.base.symbol)
         const quoteTokenBalance1 = await tokenlon.getTokenBalance(sntWethPairData.quote.symbol)
@@ -53,10 +54,11 @@ describe('test fillOrder / batchFillOrders / fillOrKillOrder / batchfillOrKill',
         await waitMined(txHash, 60)
         const baseTokenBalance2 = await tokenlon.getTokenBalance(sntWethPairData.base.symbol)
         const quoteTokenBalance2 = await tokenlon.getTokenBalance(sntWethPairData.quote.symbol)
-        expect(toBN(baseTokenBalance1)[isBuy ? 'plus' : 'minus'](toBN(baseAmount)).toString()).toEqual(toBN(baseTokenBalance2).toString())
-        expect(toBN(quoteTokenBalance1)[isBuy ? 'minus' : 'plus'](toBN(baseAmount).times(toBN(simpleOrder.price))).toFixed(12)).toEqual(toBN(quoteTokenBalance2).toFixed(12))
+        expect(toBN(baseTokenBalance1)[isBuy ? 'plus' : 'minus'](toBN(baseAmount)).toFixed(10)).toEqual(toBN(baseTokenBalance2).toFixed(10))
+        expect(toBN(quoteTokenBalance1)[isBuy ? 'minus' : 'plus'](toBN(baseAmount).times(toBN(simpleOrder.price))).toFixed(10)).toEqual(toBN(quoteTokenBalance2).toFixed(10))
       }
 
+      // large amount
       for (let side of ['BUY', 'SELL']) {
         const baseTokenBalance3 = await tokenlon.getTokenBalance(sntWethPairData.base.symbol)
         const quoteTokenBalance3 = await tokenlon.getTokenBalance(sntWethPairData.quote.symbol)
@@ -91,8 +93,8 @@ describe('test fillOrder / batchFillOrders / fillOrKillOrder / batchfillOrKill',
           await waitMined(txHash, 60)
           const baseTokenBalance4 = await tokenlon.getTokenBalance(sntWethPairData.base.symbol)
           const quoteTokenBalance4 = await tokenlon.getTokenBalance(sntWethPairData.quote.symbol)
-          expect(toBN(baseTokenBalance3)[isBuy ? 'plus' : 'minus'](toBN(simpleOrder.amount)).toString()).toEqual(toBN(baseTokenBalance4).toString())
-          expect(toBN(quoteTokenBalance3)[isBuy ? 'minus' : 'plus'](toBN(simpleOrder.amount).times(toBN(simpleOrder.price))).toFixed(12)).toEqual(toBN(quoteTokenBalance4).toFixed(12))
+          expect(toBN(baseTokenBalance3)[isBuy ? 'plus' : 'minus'](toBN(simpleOrder.amount)).toFixed(10)).toEqual(toBN(baseTokenBalance4).toFixed(10))
+          expect(toBN(quoteTokenBalance3)[isBuy ? 'minus' : 'plus'](toBN(simpleOrder.amount).times(toBN(simpleOrder.price))).toFixed(10)).toEqual(toBN(quoteTokenBalance4).toFixed(10))
         }
       }
 
@@ -124,8 +126,8 @@ describe('test fillOrder / batchFillOrders / fillOrKillOrder / batchfillOrKill',
       const baseTokenBalance6 = await tokenlon.getTokenBalance(sntWethPairData.base.symbol)
       const quoteTokenBalance6 = await tokenlon.getTokenBalance(sntWethPairData.quote.symbol)
 
-      expect(toBN(baseTokenBalance5).toString()).toEqual(toBN(baseTokenBalance6).toString())
-      expect(toBN(quoteTokenBalance5).toFixed(12)).toEqual(toBN(quoteTokenBalance6).toFixed(12))
+      expect(toBN(baseTokenBalance5).toFixed(10)).toEqual(toBN(baseTokenBalance6).toFixed(10))
+      expect(toBN(quoteTokenBalance5).toFixed(10)).toEqual(toBN(quoteTokenBalance6).toFixed(10))
     }
   })
 })

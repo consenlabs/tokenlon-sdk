@@ -6,14 +6,15 @@ import { assert as assertUtils } from '0x.js/lib/src/utils/assert'
 import { Server } from './lib/server'
 import Tokenlon from './tokenlon'
 import { toBN } from './utils/math'
-import { lowerCaseObjValue } from './utils/helper'
+import { lowerCaseObj0xValue } from './utils/helper'
 import { assert, rewriteAssertUtils } from './utils/assert'
+import { getGasPriceByAdaptorAsync } from './utils/gasPriceAdaptor'
 import { GlobalConfig, DexOrderBNToString, Tokenlon as TokenlonInterface } from './types'
 import { getPairBySymbol } from './utils/pair'
 import { getSimpleOrderWithBaseQuoteBySignedOrder, getSignedOrder, generateDexOrderWithoutSalt, orderBNToString, orderStringToBN } from './utils/dex'
 
 export const createTokenlon = async (options: GlobalConfig): Promise<Tokenlon> => {
-  const config = lowerCaseObjValue(options)
+  const config = lowerCaseObj0xValue(options)
   // default onChainValidate config is true
   config.onChainValidate = config.onChainValidate === false ? config.onChainValidate : true
   assert.isValidConfig(config)
@@ -22,6 +23,7 @@ export const createTokenlon = async (options: GlobalConfig): Promise<Tokenlon> =
   const pairList = await server.getPairList()
   const tokenlon = new Tokenlon()
   const pairs = pairList.filter(p => p.protocol === '0x')
+  const gasPrice = await getGasPriceByAdaptorAsync(config.gasPriceAdaptor)
 
   // need to set privider fitst
   await web3Wrapper.setProvider(new web3Wrapper.providers.HttpProvider(config.web3.providerUrl))
@@ -32,7 +34,7 @@ export const createTokenlon = async (options: GlobalConfig): Promise<Tokenlon> =
   rewriteAssertUtils(assertUtils)
   const zeroExWrapper = createZeroExWrapper({
     ...zeroExConfig,
-    gasPrice: toBN(zeroExConfig.gasPrice),
+    gasPrice: toBN(gasPrice),
   })
 
   return _.extend(tokenlon, {

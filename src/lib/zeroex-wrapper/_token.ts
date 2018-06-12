@@ -12,7 +12,7 @@ export const coverageToken = (obj) => {
   return _.extend(obj, {
     async setAllowanceAsync(
       tokenAddress: string,
-      ownerAddress: string,
+      _ownerAddress: string,
       spenderAddress: string,
       amountInBaseUnits: BigNumber,
       txOpts: TransactionOpts = {},
@@ -23,15 +23,13 @@ export const coverageToken = (obj) => {
       // await assert.isSenderAddressAsync('ownerAddress', ownerAddress, this._web3Wrapper)
       const normalizedTokenAddress = tokenAddress.toLowerCase()
       const normalizedSpenderAddress = spenderAddress.toLowerCase()
-      const normalizedOwnerAddress = ownerAddress.toLowerCase()
       assert.isValidBaseUnitAmount('amountInBaseUnits', amountInBaseUnits)
       return helper.tokenApproveTransaction(
         normalizedTokenAddress,
         normalizedSpenderAddress,
         amountInBaseUnits,
         {
-          from: normalizedOwnerAddress,
-          gas: txOpts.gasLimit,
+          gasLimit: txOpts.gasLimit,
           gasPrice: txOpts.gasPrice,
         },
       )
@@ -62,8 +60,7 @@ export const coverageToken = (obj) => {
         normalizedToAddress,
         amountInBaseUnits,
         {
-          from: normalizedFromAddress,
-          gas: txOpts.gasLimit,
+          gasLimit: txOpts.gasLimit,
           gasPrice: txOpts.gasPrice,
         },
       )
@@ -108,8 +105,7 @@ export const coverageToken = (obj) => {
         normalizedToAddress,
         amountInBaseUnits,
         {
-          from: normalizedSenderAddress,
-          gas: txOpts.gasLimit,
+          gasLimit: txOpts.gasLimit,
           gasPrice: txOpts.gasPrice,
         },
       )

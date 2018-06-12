@@ -77,4 +77,9 @@ export namespace Tokenlon {
     amount: number
     rawOrders: string[]
   }
+
+  export interface TxOpts {
+    gasPrice: number
+    gasLimit: number
+  }
 }

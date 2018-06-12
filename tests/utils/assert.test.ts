@@ -157,6 +157,23 @@ describe('our assert utils', () => {
       })
     })
 
+    describe('assert.isValidGasPriceAdaptor', () => {
+      const arr = ['safeLow', 'average', 'fast']
+      arr.forEach(item => {
+          it(`${item} is valid`, () => {
+            expect(assert.isValidGasPriceAdaptor(item)).toBeUndefined()
+          })
+        })
+
+      arr.map(x => ' ' + x).forEach(item => {
+        it(`${item} is invalid`, () => {
+          expect(() => {
+            assert.isValidGasPriceAdaptor(item)
+          }).toThrow()
+        })
+      })
+    })
+
     describe('assert.isValidWallet', () => {
       it('wallet is valid', () => {
         expect(assert.isValidWallet(wallet)).toBeUndefined()

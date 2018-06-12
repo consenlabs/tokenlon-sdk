@@ -19,7 +19,7 @@ const fillOrderAsync = (
   fillTakerTokenAmount: BigNumber,
   shouldThrowOnInsufficientBalanceOrAllowance: boolean,
   _takerAddress: string,
-  _orderTransactionOpts: OrderTransactionOpts,
+  orderTransactionOpts: OrderTransactionOpts = {},
 ) => {
   const params = signedOrderUtils.createFill(
     signedOrder,
@@ -34,27 +34,27 @@ const fillOrderAsync = (
     params.v,
     params.r,
     params.s,
-  ])
+  ], orderTransactionOpts)
 }
 
 const cancelOrderAsync = (
   signedOrder: SignedOrder,
   cancelTakerTokenAmount: BigNumber,
-  _orderTransactionOpts: OrderTransactionOpts,
+  orderTransactionOpts: OrderTransactionOpts = {},
 ) => {
   const params = signedOrderUtils.createCancel(signedOrder, cancelTakerTokenAmount)
   return helper.exchangeSendTransaction('cancelOrder', [
     params.orderAddresses,
     params.orderValues,
     params.cancelTakerTokenAmount,
-  ])
+  ], orderTransactionOpts)
 }
 
 const fillOrKillOrderAsync = (
   signedOrder: SignedOrder,
   fillTakerTokenAmount: BigNumber,
   _takerAddress: string,
-  _orderTransactionOpts: OrderTransactionOpts,
+  orderTransactionOpts: OrderTransactionOpts = {},
 ) => {
   const shouldThrowOnInsufficientBalanceOrAllowance = true
   const params = signedOrderUtils.createFill(
@@ -69,14 +69,14 @@ const fillOrKillOrderAsync = (
     params.v,
     params.r,
     params.s,
-  ])
+  ], orderTransactionOpts)
 }
 
 const batchFillOrdersAsync = (
   orderFillRequests: OrderFillRequest[],
   shouldThrowOnInsufficientBalanceOrAllowance: boolean,
   _takerAddress: string,
-  _orderTransactionOpts: OrderTransactionOpts,
+  orderTransactionOpts: OrderTransactionOpts = {},
 ) => {
   const params = formatters.createBatchFill(
     orderFillRequests.map(r => r.signedOrder),
@@ -91,13 +91,13 @@ const batchFillOrdersAsync = (
     params.v,
     params.r,
     params.s,
-  ])
+  ], orderTransactionOpts)
 }
 
 const batchFillOrKillAsync = (
   orderFillRequests: OrderFillRequest[],
   _takerAddress: string,
-  _orderTransactionOpts: OrderTransactionOpts = {},
+  orderTransactionOpts: OrderTransactionOpts = {},
 ) => {
   const params = formatters.createBatchFill(
     orderFillRequests.map(r => r.signedOrder),
@@ -111,7 +111,7 @@ const batchFillOrKillAsync = (
     params.v,
     params.r,
     params.s,
-  ])
+  ], orderTransactionOpts)
 }
 
 const fillOrdersUpToAsync = (
@@ -119,7 +119,7 @@ const fillOrdersUpToAsync = (
   fillTakerTokenAmount: BigNumber,
   shouldThrowOnInsufficientBalanceOrAllowance: boolean,
   _takerAddress: string,
-  _orderTransactionOpts: OrderTransactionOpts,
+  orderTransactionOpts: OrderTransactionOpts = {},
 ) => {
   const params = formatters.createFillUpTo(
     signedOrders,
@@ -134,12 +134,12 @@ const fillOrdersUpToAsync = (
     params.v,
     params.r,
     params.s,
-  ])
+  ], orderTransactionOpts)
 }
 
 const batchCancelOrdersAsync = (
   orderCancellationRequests: OrderCancellationRequest[],
-  _orderTransactionOpts: OrderTransactionOpts,
+  orderTransactionOpts: OrderTransactionOpts = {},
 ) => {
   const orders = orderCancellationRequests.map(r => r.order) as SignedOrder[]
   const cancelTakerTokenAmounts = orderCancellationRequests.map(r => r.takerTokenCancelAmount)
@@ -148,7 +148,7 @@ const batchCancelOrdersAsync = (
     params.orderAddresses,
     params.orderValues,
     params.cancelTakerTokenAmounts,
-  ])
+  ], orderTransactionOpts)
 }
 
 export const coverageExchange = (exchange) => {

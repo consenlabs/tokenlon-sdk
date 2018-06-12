@@ -79,7 +79,7 @@ export namespace Tokenlon {
   }
 
   export interface TxOpts {
-    gasPrice: number
-    gasLimit: number
+    gasPrice?: number
+    gasLimit?: number
   }
 }

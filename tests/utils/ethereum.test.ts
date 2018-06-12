@@ -9,21 +9,13 @@ import { wallet, web3ProviderUrl } from '../__mock__/config'
 import { BigNumber } from '@0xproject/utils'
 import { orders } from '../__mock__/order'
 import { waitSeconds } from '../__utils__/wait'
+import { getReceiptAsync } from '../__utils__/helper'
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
 
 web3.setProvider(new Web3.providers.HttpProvider(web3ProviderUrl))
 
 const waitMined = async (txHash, seconds) => {
-  const getReceiptAsync = (txHash) => {
-    return new Promise((resolve) => {
-      web3.eth.getTransactionReceipt(txHash, (err, res) => {
-        if (!err) {
-          resolve(res)
-        }
-      })
-    })
-  }
   let receipt = await getReceiptAsync(txHash)
   let timeUsed = 0
   if (timeUsed <= seconds) {

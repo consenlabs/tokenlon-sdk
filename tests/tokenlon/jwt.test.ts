@@ -9,6 +9,8 @@ import { jsonrpc } from '../../src/lib/server/_request'
 import { personalSign } from '../../src/utils/sign'
 import { getTimestamp } from '../../src/utils/helper'
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
+
 const server = new Server(localConfig.server.url, localConfig.wallet)
 
 const getToken = async (timestamp, wallet: Wallet) => {
@@ -68,7 +70,7 @@ describe('test getToken', () => {
     },
     {
       testMsg: 'should faild when getting token failed with timestamp more then 1 hour after',
-      timestamp: getTimestamp() + 3601,
+      timestamp: getTimestamp() + 3660,
       wallet: localConfig.wallet,
       errorMsg: 'timestamp',
       result: false,

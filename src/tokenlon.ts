@@ -153,7 +153,7 @@ export default class Tokenlon {
       price: params.price,
       amount: params.amount,
       amountTotal: params.amount,
-      expirationUnixTimestampSec: params.expirationUnixTimestampSec,
+      expirationUnixTimestampSec: params.expirationUnixTimestampSec || +toBePlacedOrder.expirationUnixTimestampSec,
       // for key sequence to be same with server order rawOrder
       rawOrder: JSON.stringify({
         exchangeContractAddress: toBePlacedOrder.exchangeContractAddress,

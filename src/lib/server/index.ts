@@ -3,10 +3,11 @@ import { DexOrderBNToString, Pair, Server as ServerInterface } from '../../types
 import { Wallet } from '../../types'
 import { getTimestamp } from '../../utils/helper'
 import { personalSign } from '../../utils/sign'
-
 export class Server {
   private _url: string
   private _wallet: Wallet
+  private _tokenObj = { timestamp: 0, token: '' }
+  private _tokenRequesting = false
 
   constructor(url: string, wallet: Wallet) {
     this._url = url
@@ -20,25 +21,23 @@ export class Server {
   }
 
   private async _getHeader() {
-    let obj = { timestamp: 0, token: '' }
-    let isRequesting = false
     const timestamp = getTimestamp()
 
     // 因每一个 Tokenlon instantce 都有各自的 JWT Token
     // 并且 SDK 用于自动化交易，过程中没有切换节点需要更新JWT Token的情况
     // 因此使用定期提前更新 JWT Token 的方式来避免 JWT Token 的过期
-    if (!isRequesting && (!obj.timestamp || obj.timestamp < timestamp - 3600)) {
+    if (!this._tokenRequesting && (!this._tokenObj.timestamp || this._tokenObj.timestamp < timestamp - 3600)) {
       const signature = personalSign(this._wallet.privateKey, timestamp.toString())
-      isRequesting = true
+      this._tokenRequesting = true
       try {
         const token = await this.getToken({ timestamp, signature })
-        obj = { timestamp, token }
+        this._tokenObj = { timestamp, token }
       } catch (e) {
       }
-      isRequesting = false
+      this._tokenRequesting = false
     }
 
-    return { 'access-token': obj.token }
+    return { 'access-token': this._tokenObj.token }
   }
 
   async getPairList(): Promise<Pair.ExchangePair[]> {
